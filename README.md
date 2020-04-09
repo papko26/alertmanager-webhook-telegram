@@ -1,5 +1,5 @@
-![](https://img.shields.io/docker/pulls/papko26/kaniko_envsubst.svg)
-![](https://img.shields.io/docker/cloud/build/papko26/kaniko_envsubst.svg)
+![](https://img.shields.io/docker/pulls/papko26/alertmanager-webhook-telegram.svg)
+![](https://img.shields.io/docker/cloud/build/papko26/alertmanager-webhook-telegram.svg)
 # Alertmanager webhook for Telegram using Flask
 
 ## Run on docker
@@ -32,20 +32,18 @@ python3 flaskAlert.py
 
 ```
 
-How do I create a bot?
-==========================
+## How do I create a bot?
 
 There's a… bot for that. Just talk to [BotFather](https://t.me/botfather) and follow a few simple steps. Once you've created a bot and received your authorization token, and it is not enough, check [official docs](https://core.telegram.org/bots)
 
 
-How can I get the chat ID
-==========================
+## How can I get the chat ID
 1) Add bot on channel
 2) Send message on this channel with @botname
 3) Access access the link https://api.telegram.org/botXXX:YYYY/getUpdates (xxx:yyyy botID)
 
 
-Another way to get the chat ID
+## Another way to get the chat ID
 ==============================
 1) Access https://web.telegram.org/
 2) Click to specific chat to the left
@@ -53,6 +51,8 @@ Another way to get the chat ID
 
 > make sure set proper username and password when you exposing your app on internet
 
-Example to test
-===============
+## Example to test
 	curl -XPOST --data '{"status":"resolved","groupLabels":{"alertname":"instance_down"},"commonAnnotations":{"description":"i-0d7188fkl90bac100 of job ec2-sp-node_exporter has been down for more than 2 minutes.","summary":"Instance i-0d7188fkl90bac100 down"},"alerts":[{"status":"resolved","labels":{"name":"olokinho01-prod","instance":"i-0d7188fkl90bac100","job":"ec2-sp-node_exporter","alertname":"instance_down","os":"linux","severity":"page"},"endsAt":"2019-07-01T16:16:19.376244942-03:00","generatorURL":"http://pmts.io:9090","startsAt":"2019-07-01T16:02:19.376245319-03:00","annotations":{"description":"i-0d7188fkl90bac100 of job ec2-sp-node_exporter has been down for more than 2 minutes.","summary":"Instance i-0d7188fkl90bac100 down"}}],"version":"4","receiver":"infra-alert","externalURL":"http://alm.io:9093","commonLabels":{"name":"olokinho01-prod","instance":"i-0d7188fkl90bac100","job":"ec2-sp-node_exporter","alertname":"instance_down","os":"linux","severity":"page"}}' http://username:password@localhost:9119/alert
+	
+## How can I use it with alertmanager:
+//TODO
