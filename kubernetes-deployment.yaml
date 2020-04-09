@@ -35,7 +35,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       containers:
         - name: alertmanager-webhook-telegram
-          image: papko26/alertmanager-webhook-telegram:v2
+          image: papko26/alertmanager-webhook-telegram:v5
           livenessProbe:
             failureThreshold: 3
             httpGet:
@@ -43,7 +43,9 @@ spec:
               port: 9119
               scheme: HTTP
             initialDelaySeconds: 10
+            periodSeconds: 30
             periodSeconds: 5
+            timeoutSeconds: 5
           env:
             - name: TG_BOT_TOKEN
               value: "CHANGE_ME"

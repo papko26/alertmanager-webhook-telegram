@@ -16,13 +16,11 @@ class Settings(BaseSettings):
     TG_CHAT_ID: int
     TG_BOT_TOKEN: str
     APP_PORT: int = 9191
-    BASIC_AUTH_FORCE: bool = True
 
 
 app = Flask(__name__)
 app.secret_key = os.urandom(16)
 app.config.update(
-    BASIC_AUTH_FORCE = Settings().BASIC_AUTH_FORCE,
     BASIC_AUTH_PASSWORD = Settings().BASIC_AUTH_PASSWORD,
     BASIC_AUTH_USERNAME = Settings().BASIC_AUTH_USERNAME)
 
@@ -47,6 +45,7 @@ def tg_available():
     
 
 @app.route('/alert', methods = ['POST'])
+@basic_auth.required
 def postAlertmanager():
 
     content = json.loads(request.get_data())
