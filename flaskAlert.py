@@ -37,20 +37,34 @@ bot = telegram.Bot(token=Settings().TG_BOT_TOKEN)
 def postAlertmanager():
 
     content = json.loads(request.get_data())
-    app.logger.info("{0}".format(content))
     for alert in content['alerts']:
+
+        alertstring = "Unexpected Status"
+        if alert.get('status') == "firing":
+            alertstring = "Detected: {}".format(alert.get('startsAt'))
+        elif alert.get('status') == "resolved":
+            alertstring = "Resolved: {}".format(alert.get('endsAt'))
+        else:
+            app.logger.error("Error when parsing status, got: {}, expected firing/resolved".format(alert.get('status')))
+
+        instance_alias = ""
+        if 'name' in alert.get('labels'):
+            instance_alias = ("({})").format(alert.get('labels',{}).get('name'))
+
+        app.logger.info("{0}".format(content))
+    
         message = """
         Status: {}
         Alertname: {}
         {}
-        Instance: {} ({})
+        Instance: {} {}
 
         {}
         """.format(alert['status'],
-                    alert.get('labels','alertname'),
-                    'Detected: ' +alert.get('startsAt') if alert['status'] == "firing" else 'Resolved: ' +alert.get('endsAt'),
-                    alert.get('labels','instance'), (alert.get('labels','name') if 'name' in alert['labels'] else alert.get('labels','instance')),
-                    alert.get('annotations','description'))
+                   alert.get('labels',{}).get('alertname'),
+                   alertstring,
+                    alert.get('labels',{}).get('instance'), instance_alias,
+                    alert.get('annotations',{}).get('description'))
 
         try:
             bot.sendMessage(chat_id=Settings().TG_CHAT_ID, text=message)

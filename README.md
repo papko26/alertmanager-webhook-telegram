@@ -31,17 +31,17 @@ pip install -r requirements.txt
 python3 flaskAlert.py
 
 ```
-## How can I use it with alertmanager:
+## Use it with alertmanager:
 ```yaml
 receivers:
 - name: 'telegram-webhook'
   webhook_configs:
   - url: http://alertmanager-webhook-telegram:9119/alert
-    send_resolved: true
-    http_config:
-	basic_auth:
-	username: 'test'
-	password: 'test'
+      send_resolved: true
+      http_config:
+      basic_auth:
+        username: 'test'
+        password: 'test'
 ```
 
 
@@ -50,7 +50,7 @@ receivers:
 There's a… bot for that. Just talk to [BotFather](https://t.me/botfather) and follow a few simple steps. Once you've created a bot and received your authorization token, and it is not enough, check [official docs](https://core.telegram.org/bots)
 
 
-## How can I get the chat ID
+## How do I get the chat ID
 1) Add bot on channel
 2) Send message on this channel with @botname
 3) Access access the link https://api.telegram.org/botXXX:YYYY/getUpdates (xxx:yyyy botID)
