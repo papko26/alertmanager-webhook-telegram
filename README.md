@@ -22,7 +22,7 @@ docker run \
           -e "TG_BOT_TOKEN=SET_HERE_LONGLONGTOKEN" \
           -e "BASIC_AUTH_USERNAME=SET_USERNAME_HERE" \
           -e "BASIC_AUTH_PASSWORD=SET_PASS_HERE" \
-          papko26/alertmanager-webhook-telegram 
+          papko26/alertmanager-webhook-telegram:v5
 ```
 
 
