@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager-webhook-telegram
+  labels:
+    app: webhook
+    sub: telegram
+    affinitygroup: alertmanager-webhook-telegram
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 67%
+      maxUnavailable: 34%
+  selector:
+    matchLabels:
+      app: webhook
+      sub: telegram
+  template:
+    metadata:
+      labels:
+        app: webhook
+        sub: telegram
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: affinitygroup
+                    operator: In
+                    values:
+                      - alertmanager-webhook-telegram
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: alertmanager-webhook-telegram
+          image: papko26/alertmanager-webhook-telegram:v2
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 9119
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          env:
+            - name: TG_BOT_TOKEN
+              value: "CHANGE_ME"
+            - name: TG_CHAT_ID
+              value: "$CHANGE_ME"
+            - name: BASIC_AUTH_USERNAME
+              value: "CHANGE_ME_274"
+            - name: BASIC_AUTH_PASSWORD
+              value: "$CHANGE_ME_274"
+          ports:
+            - containerPort: 9119
+          resources:
+            requests:
+              cpu: "0.05"
+              memory: "64Mi"
+            limits:
+              cpu: "0.2"
+              memory: "128Mi"
+          securityContext:
+            runAsUser: 999
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  name: alertmanager-webhook-telegram
+spec:
+  ports:
+  - name: awt
+    port: 9119
+    protocol: TCP
+    targetPort: 9119
+  selector:
+    app: webhook
+    sub: telegram

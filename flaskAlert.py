@@ -10,8 +10,6 @@ from logging.config import dictConfig
 from pydantic import BaseSettings
 
 
-
-
 class Settings(BaseSettings):
     BASIC_AUTH_USERNAME: str
     BASIC_AUTH_PASSWORD: str
@@ -30,8 +28,23 @@ app.config.update(
 
 
 basic_auth = BasicAuth(app)
-
 bot = telegram.Bot(token=Settings().TG_BOT_TOKEN)
+
+@app.route('/health', methods = ['GET'])
+def tg_available():
+    try:
+        reply = bot.get_updates()
+        if type(reply)==list:
+            app.logger.info("healthcheck: OK")
+            return "tg ok", 200
+        else:
+            app.logger.error("healthcheck: unexpected reply: {}".format(reply))
+            return "unexpected reply: {}".format(reply), 500
+
+    except Exception as lc_err:
+        app.logger.error("healthcheck: error: {}".format(lc_err))
+        return "healthcheck: error: {}".format(lc_err), 500
+    
 
 @app.route('/alert', methods = ['POST'])
 def postAlertmanager():
@@ -72,9 +85,11 @@ def postAlertmanager():
             return "Alert OK", 200
         except Exception as tge:
             app.logger.error(tge)
-            return "Alert FAIL: ".format(tge), 500
+            return "Alert FAIL: {}".format(tge), 500
 
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     app.run(host='0.0.0.0', port=Settings().APP_PORT)
+
+#TODO: json logging
