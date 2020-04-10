@@ -1,0 +1,48 @@
+version: "3"
+
+
+services:
+  alertmanager-webhook-telegram:
+    image: papko26/alertmanager-webhook-telegram:v5
+    restart: always
+    container_name: alertmanager-webhook-telegram
+    ports:
+      - "9119:9119"
+    environment:
+      TG_BOT_TOKEN: SET_LONGLONG_TG_TOKEN_HERE
+      TG_CHAT_ID: SET_ID_HERE
+      BASIC_AUTH_USERNAME: SET_USERNAME_HERE
+      BASIC_AUTH_PASSWORD: SET_PASS_HERE
+    user: nobody
+    privileged: false
+    read_only: true
+
+#In case you expiriecing network issues with VPN when starting service
+#Fuck Russian Censorship Agency (RKN)!
+#      
+#networks:
+#  default:
+#    driver: bridge
+#    ipam:
+#      config:
+#        - subnet: 172.16.57.0/24
+
+
+# In case of swarm, you can olso add limiting:
+#      
+#    deploy:
+#      resources:
+#          limits:
+#            cpus: '0.20'
+#            memory: 128M
+#          reservations:
+#            cpus: '0.05'
+#            memory: 64M
+    
+
+
+#Healthcheck should be as tricky as that:
+
+#python3 -c "exec(\"import urllib.request\nwith urllib.request.urlopen('http://localhost:9119/health') as response: print(response.read())\")" || exit 1
+
+#But my tests shows it fails some time without any reason, thats why it is not implemented here, PR with fix will be appreciated
