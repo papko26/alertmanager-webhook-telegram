@@ -1,13 +1,12 @@
 ![](https://img.shields.io/docker/pulls/papko26/alertmanager-webhook-telegram.svg)
 ![](https://img.shields.io/docker/cloud/build/papko26/alertmanager-webhook-telegram.svg)
-# Alertmanager webhook for Telegram using Flask (Kubernetes-ready)
+# Alertmanager webhook for Telegram using Flask (Docker/Kubernetes/Compose ready)
 
 ### Why?
 >Because alertmanager from kube-prometheus cant send alerts to telegram. This one can creates webhook-proxy service in cluster to fix it.
 
-### Only Kubernetes is supported?
->No, you can use it with docker, or even run it localy with python!
-
+### Only Kubernetes/Compose/Docker is supported?
+>No, you can use run it localy with python!
 
 ## Run on docker
 
@@ -97,12 +96,12 @@ There's a… bot for that. Just talk to [BotFather](https://t.me/botfather) and 
 2) Click to specific chat to the left
 3) At the url, you can get the chat ID
 
-## Example to test (locally)
-	curl -XPOST --data '{"status":"resolved","groupLabels":{"alertname":"instance_down"},"commonAnnotations":{"description":"i-0d7188fkl90bac100 of job ec2-sp-node_exporter has been down for more than 2 minutes.","summary":"Instance i-0d7188fkl90bac100 down"},"alerts":[{"status":"resolved","labels":{"name":"olokinho01-prod","instance":"i-0d7188fkl90bac100","job":"ec2-sp-node_exporter","alertname":"instance_down","os":"linux","severity":"page"},"endsAt":"2019-07-01T16:16:19.376244942-03:00","generatorURL":"http://pmts.io:9090","startsAt":"2019-07-01T16:02:19.376245319-03:00","annotations":{"description":"i-0d7188fkl90bac100 of job ec2-sp-node_exporter has been down for more than 2 minutes.","summary":"Instance i-0d7188fkl90bac100 down"}}],"version":"4","receiver":"infra-alert","externalURL":"http://alm.io:9093","commonLabels":{"name":"olokinho01-prod","instance":"i-0d7188fkl90bac100","job":"ec2-sp-node_exporter","alertname":"instance_down","os":"linux","severity":"page"}}' http://SET_USERNAME_HERE:SET_PASS_HERE@localhost:9119/alert
-
-
+## Example to test
 ```bash
-curl -0 -v -X POST http://SET_USERNAME_HERE:SET_PASS_HERE@localhost:9119/alert \
+#localhost:9119 - for testing localy on docker/compose/python3
+#alertmanager-webhook-telegram - for testing on kubernetes (inside cluster only!!!)
+SERVICE_ADDR="localhost:9119"
+curl -0 -v -X POST http://SET_USERNAME_HERE:SET_PASS_HERE@$SERVICE_ADDR/alert \
 -H "Expect:" \
 -H 'Content-Type: application/json; charset=utf-8' \
 --data-binary @- << EOF
@@ -157,7 +156,8 @@ EOF
 	
 
 ## Known ussues:
+* bot.get_updates() method is used for livechecks in k8s. Seems to be shitty hack, need to replace it with something that would not consume user messages.
+* json logging is not implemented. Logging even not tested yet.
 * unexpected behavior when basicAuth credentians (SET_USERNAME_HERE:SET_PASS_HERE) is not correct. No reply, no message is generated, only HTTP/1.0 401 UNAUTHORIZED
 * Healthcheck is not implemented in compose file. You can find more info at docker-compose.yml file
-* json logging is not implemented. Logging even not tested yet.
 * telegram-proxy is not supported.
