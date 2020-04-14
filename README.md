@@ -1,3 +1,6 @@
+> You definitely should use [recommended integration plugin](https://github.com/inCaller/prometheus_bot) instead of this. I forked it for testing purposes only.
+
+
 ![](https://img.shields.io/docker/pulls/papko26/alertmanager-webhook-telegram.svg)
 ![](https://img.shields.io/docker/cloud/build/papko26/alertmanager-webhook-telegram.svg)
 # Alertmanager webhook for Telegram using Flask (Docker/Kubernetes/Compose ready)
